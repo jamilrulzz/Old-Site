@@ -1,0 +1,27 @@
+import React, { useState } from "react";
+import MapView from "./map/MapView";
+import UploadModal from "./components/UploadModal";
+import TimelineSlider from "./components/TimelineSlider";
+
+export default function App() {
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [yearFilter, setYearFilter] = useState(2026);
+
+  return (
+    <div className="app">
+      <TimelineSlider year={yearFilter} setYear={setYearFilter} />
+
+      <MapView
+        yearFilter={yearFilter}
+        onLocationSelect={(loc) => setSelectedLocation(loc)}
+      />
+
+      {selectedLocation && (
+        <UploadModal
+          location={selectedLocation}
+          onClose={() => setSelectedLocation(null)}
+        />
+      )}
+    </div>
+  );
+}
