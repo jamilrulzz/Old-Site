@@ -1,0 +1,49 @@
+import React, { useEffect } from "react";
+import mapboxgl from "mapbox-gl";
+import { supabase } from "../lib/supabase";
+
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+
+export default function MapView({ onLocationSelect, yearFilter }) {
+  useEffect(() => {
+    const map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [90.4125, 23.8103],
+      zoom: 11
+    });
+
+    map.on("click", (e) => {
+      onLocationSelect({
+        lat: e.lngLat.lat,
+        lng: e.lngLat.lng
+      });
+    });
+
+    loadPhotos(map);
+
+    async function loadPhotos(map) {
+      const { data } = await supabase
+        .from("photos")
+        .select("*")
+        .eq("year", yearFilter);
+
+      data?.forEach((p) => {
+        new mapboxgl.Marker()
+          .setLngLat([p.lng, p.lat])
+          .setPopup(
+            new mapboxgl.Popup().setHTML(`
+              <img src="${p.image_url}" width="150"/>
+              <h4>${p.title}</h4>
+              <p>${p.year}</p>
+            `)
+          )
+          .addTo(map);
+      });
+    }
+
+    return () => map.remove();
+  }, [yearFilter]);
+
+  return <div id="map" style={{ height: "100vh" }} />;
+}
