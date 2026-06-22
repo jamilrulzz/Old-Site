@@ -1,0 +1,43 @@
+import React, { useState } from "react";
+import { supabase } from "../lib/supabase";
+
+export default function UploadModal({ location, onClose }) {
+  const [file, setFile] = useState(null);
+  const [title, setTitle] = useState("");
+  const [year, setYear] = useState("");
+
+  async function upload() {
+    const fileName = `${Date.now()}-${file.name}`;
+
+    await supabase.storage
+      .from("photos")
+      .upload(fileName, file);
+
+    const { data } = supabase.storage
+      .from("photos")
+      .getPublicUrl(fileName);
+
+    await supabase.from("photos").insert({
+      lat: location.lat,
+      lng: location.lng,
+      title,
+      year,
+      image_url: data.publicUrl
+    });
+
+    onClose();
+  }
+
+  return (
+    <div className="modal">
+      <h3>Upload Memory</h3>
+
+      <input placeholder="Title" onChange={(e) => setTitle(e.target.value)} />
+      <input placeholder="Year" onChange={(e) => setYear(e.target.value)} />
+      <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+
+      <button onClick={upload}>Save</button>
+      <button onClick={onClose}>Cancel</button>
+    </div>
+  );
+}
