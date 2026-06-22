@@ -1,0 +1,23 @@
+⚙️ time-map-pro/
+│
+├── public/
+│   └── index.html
+│
+├── src/
+│   ├── app.jsx
+│   ├── main.jsx
+│   ├── map/
+│   │   └── MapView.jsx
+│   ├── components/
+│   │   ├── UploadModal.jsx
+│   │   ├── TimelineSlider.jsx
+│   │   └── PhotoCard.jsx
+│   ├── lib/
+│   │   ├── supabase.js
+│   │   └── auth.js
+│   └── styles.css
+│
+├── .env.example
+├── netlify.toml
+├── package.json
+└── vite.config.js
