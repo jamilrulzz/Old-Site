@@ -1,0 +1,9 @@
+create table photos (
+  id bigint generated always as identity primary key,
+  lat double precision,
+  lng double precision,
+  title text,
+  year int,
+  image_url text,
+  created_at timestamp default now()
+);
